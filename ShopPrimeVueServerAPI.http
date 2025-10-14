@@ -1,0 +1,6 @@
+@ShopPrimeVueServerAPI_HostAddress = http://localhost:5143
+
+GET {{ShopPrimeVueServerAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
