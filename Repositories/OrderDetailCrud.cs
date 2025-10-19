@@ -41,6 +41,14 @@ namespace ShopPrimeVueServerAPI.Crud
             }
         }
 
+        public static void DelByOrderHeadId(int orderId)
+        {
+            using (IDbConnection db = new SqlConnection(strConn))
+            {
+                db.Execute("DELETE FROM OrderDetail WHERE orderId = @orderId;", new { orderId });
+            }
+        }
+
         public static void Update(OrderDetail model)
         {
             using (IDbConnection db = new SqlConnection(strConn))

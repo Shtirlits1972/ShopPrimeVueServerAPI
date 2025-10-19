@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ShopPrimeVueServerAPI.Crud;
 using ShopPrimeVueServerAPI.Models;
+using System.Reflection;
 using System.Security.Claims;
 
 namespace ShopPrimeVueServerAPI.Controllers
@@ -26,8 +27,10 @@ namespace ShopPrimeVueServerAPI.Controllers
                 else
                 {
                     // Используем стандартные ClaimTypes для большей надежности
-                    var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
-                                   ?? User.FindFirst("id")?.Value;
+                    var userIdClaim =  User.FindFirst("id")?.Value;
+
+
+                    int hh = 0;
 
                     if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
                     {
@@ -51,8 +54,43 @@ namespace ShopPrimeVueServerAPI.Controllers
         {
             try
             {
-                OrderHead model = OrderHeadCrud.GetOne(id);
-                return Ok(model);
+                if (id == 0)
+                {
+                    string newOrderNumber = OrderHeadCrud.GetNewOrderNumber();
+                    DateTime currentDate = DateTime.Now.Date;
+
+                    var userIdClaim = User.FindFirst("id")?.Value;
+
+                    int userId = 0;
+                    if (!string.IsNullOrEmpty(userIdClaim))
+                    {
+                        // Проверяем результат TryParse и используем существующую переменную userId
+                        if (!int.TryParse(userIdClaim, out userId))
+                        {
+                            return Unauthorized("Не удалось определить идентификатор пользователя");
+                        }
+                    }
+
+                    Users users = UsersCrud.GetOne(userId);
+
+                    int g = 5;
+                    OrderHead newOrderHead = new OrderHead
+                    {
+                        id = 0,
+                        UserId = userId,
+                        UsersName = users?.UsersName ?? "Unknown",
+                        OrderNumber = newOrderNumber,
+                        OrderData = currentDate,
+                        TotalPrice = 0
+                    };
+
+                    return Ok(newOrderHead);
+                }
+                else 
+                {
+                    OrderHead model = OrderHeadCrud.GetOne(id);
+                    return Ok(model);
+                }
             }
             catch (Exception ex)
             {

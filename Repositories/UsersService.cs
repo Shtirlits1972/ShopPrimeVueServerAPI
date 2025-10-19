@@ -29,11 +29,7 @@ namespace ShopPrimeVueServerAPI.Repositories
             if (string.IsNullOrWhiteSpace(user.Password))
                 throw new ArgumentException("Пароль обязателен");
 
-            // Установка значений по умолчанию
-            user.Role ??= "user";
-            user.isAppruved = true;
-
-            return await _usersRepository.CreateAsync(user);
+              return await _usersRepository.CreateAsync(user);
         }
 
         public Task UpdateUserAsync(Users user) => _usersRepository.UpdateAsync(user);

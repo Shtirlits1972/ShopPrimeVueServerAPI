@@ -9,6 +9,18 @@ namespace ShopPrimeVueServerAPI.Crud
     public class OrderHeadCrud
     {
         private static readonly string strConn = Ut.GetConnetString();
+
+
+        public static string GetNewOrderNumber()
+        {
+            string orderNumber = "######";
+            using (IDbConnection db = new SqlConnection(strConn))
+            {
+                orderNumber = db.Query<string>("SELECT [dbo].[getNewOrderNumber] ()").FirstOrDefault() ?? "";
+            }
+            return orderNumber;
+        }
+
         public static List<OrderHead> GetAll()
         {
             List<OrderHead> list = new List<OrderHead>();
@@ -29,7 +41,7 @@ namespace ShopPrimeVueServerAPI.Crud
             using (IDbConnection db = new SqlConnection(strConn))
             {
                 list = db.Query<OrderHead>(
-                    "SELECT Id, [orderNumber], [userId], [UsersName], [orderData], [TotalPrice] FROM OrderHead WHERE userId = @UserId",
+                    "SELECT Id, [orderNumber], [userId], [UsersName], [orderData], [TotalPrice] FROM OrderHeadView WHERE userId = @UserId",
                     new { UserId = userId }
                 ).ToList();
             }
@@ -51,6 +63,8 @@ namespace ShopPrimeVueServerAPI.Crud
 
         public static void Del(int Id)
         {
+            OrderDetailCrud.DelByOrderHeadId(Id);
+
             using (IDbConnection db = new SqlConnection(strConn))
             {
                 db.Execute("DELETE FROM OrderHead WHERE Id = @Id;", new { Id });
