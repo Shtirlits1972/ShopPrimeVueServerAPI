@@ -159,12 +159,12 @@ namespace ShopPrimeVueServerAPI.Controllers
                 new Claim("id", user.id.ToString())
             };
 
-            var tokenExpiryMinutes = _config.GetValue<int>("Jwt:ExpiresMinutes", 120);
+           // var tokenExpiryMinutes = _config.GetValue<int>("Jwt:ExpiresMinutes", 120);
             var token = new JwtSecurityToken(
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(tokenExpiryMinutes),
+                expires: DateTime.UtcNow.AddMonths(1),
                 signingCredentials: creds
             );
 
